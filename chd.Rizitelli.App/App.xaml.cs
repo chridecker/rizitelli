@@ -1,15 +1,24 @@
-﻿namespace chd.Rizitelli.App
+﻿using chd.UI.Base.Contracts.Enum;
+using chd.UI.Base.Contracts.Interfaces.Services;
+
+namespace chd.Rizitelli.App
 {
     public partial class App : Application
     {
-        public App()
+        private readonly IAppInfoService _appInfoService;
+        public App(IAppInfoService appInfoService )
         {
             InitializeComponent();
+            this._appInfoService = appInfoService;
         }
 
-        protected override Window CreateWindow(IActivationState? activationState)
+         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainPage()) { Title = "chd.Rizitelli.App" };
+            var mainWindow = new Window(new MainPage());
+            mainWindow.Deactivated += (sender, args) => this._appInfoService.AppLifeCycleChanged?.Invoke(this, EAppLifeCycle.OnSleep);
+            mainWindow.Resumed += (sender, args) => this._appInfoService.AppLifeCycleChanged?.Invoke(this, EAppLifeCycle.OnResume);
+
+            return mainWindow;
         }
     }
 }

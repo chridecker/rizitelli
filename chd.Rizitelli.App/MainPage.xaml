@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:chd.Rizitelli.App"
              xmlns:components="clr-namespace:chd.Rizitelli.App.Components"
-             x:Class="chd.Rizitelli.App.MainPage">
+             x:Class="chd.Rizitelli.App.MainPage"
+             BackgroundColor="{DynamicResource CHDWhite}"
+             >
 
     <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
