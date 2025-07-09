@@ -1,17 +1,18 @@
-﻿@inherits LayoutComponentBase
+﻿@using chd.Rizitelli.Contracts.Interfaces
+@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<div class="page @(this.settingManager.IsiOS ? "ios" : "") ">
+    <CascadingBackButton IsiOS="this.settingManager.IsiOS">
+        <main class="collapsed-nav">
+            <article id="main-article" class="content px-4" @onscroll="scrollInfoService.Scrolled">
+                @Body
+            </article>
+        </main>
+    </CascadingBackButton>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
 </div>
+
+@code {
+    [Inject] ISettingManager settingManager { get; set; }
+    [Inject] IScrollInfoService scrollInfoService { get; set; }
+}

@@ -27,10 +27,13 @@ namespace chd.Rizitelli.App.Data
         {
 #if ANDROID
             services.AddAndroidServices();
+            services.AddUtilities<chdProfileService, int, int, UserIdLogInService, AndroidSettingManager, ISettingManager, UIComponentHandler, IBaseUIComponentHandler, MauiUpdateService>(ServiceLifetime.Singleton);
+
 #elif IOS
+            services.AddUtilities<chdProfileService, int, int, UserIdLogInService, iOSSettingManager, ISettingManager, UIComponentHandler, IBaseUIComponentHandler, MauiUpdateService>(ServiceLifetime.Singleton);
+
             services.AddiOS();
 #endif
-            services.AddUtilities<chdProfileService, int, int, UserIdLogInService, SettingManager, ISettingManager, UIComponentHandler, IBaseUIComponentHandler, MauiUpdateService>(ServiceLifetime.Singleton);
             services.AddMauiModalHandler();
             services.AddScoped<INavigationHistoryStateContainer, NavigationHistoryStateContainer>();
             services.AddScoped<INavigationHandler, NavigationHandler>();

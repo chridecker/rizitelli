@@ -116,7 +116,7 @@ namespace chd.Rizitelli.App
 
             var dict = new Dictionary<string, string>();
 
-            dict.Add($"ConnectionStrings:ScoringContext", $"Data Source={path}");
+            dict.Add($"ConnectionStrings:{nameof(DataContext)}", $"Data Source={path}");
 
             return new ConfigurationBuilder().AddInMemoryCollection(dict).Build();
         }

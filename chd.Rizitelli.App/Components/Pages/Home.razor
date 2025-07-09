@@ -1,5 +1,73 @@
 ﻿@page "/"
+@using chd.Rizitelli.App.Components.Shared
+@using chd.Rizitelli.App.Extensions
+@using chd.Rizitelli.Contracts.Dtos
+@using chd.Rizitelli.Contracts.Interfaces
+@using chd.Rizitelli.Persistence.Data
+@using chd.UI.Base.Components.General.Search
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<FloatingActionNavigation FAIconActive="circle-play" TextActive="Neues Spiel" OnClick="this.StartNewGame">
+    <FloatingActionButton FAClass="user-plus" Title="Neuer Spieler" OnClick="this.CreateNewPlayer" />
+</FloatingActionNavigation>
+
+@code {
+    [CascadingParameter] public CascadingBackButton _backButton { get; set; }
+
+    [Inject] DataContext Context { get; set; }
+    [Inject] IModalHandler modal { get; set; }
+    [Inject] ISettingManager settingManager { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this._backButton.SetBackButton(false);
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task StartNewGame()
+    {
+        var parameters = new ModalParameters
+            {
+                { nameof(MultiSelectModalComponent<Player>.Items), this.Context.Players.ToList()},
+                { nameof(MultiSelectModalComponent<Player>.RenderType),typeof(SelectPlayer) },
+                { nameof(MultiSelectModalComponent<Player>.RenderParameterDict),(Player dto)=> MultiSelectModalComponent<Player>.CreateRenderParameterDict(dto,((x)=> nameof(SelectPlayer.Player),(x)=>x))},
+                { nameof(MultiSelectModalComponent<Player>.SelectAllText), "Alle"},
+                { nameof(MultiSelectModalComponent<Player>.SelectNoneText), "Keiner"},
+                { nameof(MultiSelectModalComponent<Player>.ShowCount), true},
+                { nameof(MultiSelectModalComponent<Player>.ConfirmText), "Weiter"},
+            };
+        var modalInstance = this.modal.Show<MultiSelectModalComponent<Player>>("Spieler auswählen", parameters);
+
+        var result = await modalInstance.Result;
+        if (result.Confirmed && result.Data is List<Player> lst
+            && lst.Any())
+        {
+            // Reihenfolge
+            // Geber
+            // Stiche
+
+        }
+    }
+
+    private async Task CreateNewPlayer()
+    {
+        var name = await this.modal.ShowSmallInputDialog("Neuer Spieler", settingManager.IsiOS, "Name...");
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return;
+        }
+        if (this.Context.Players.Any(a => a.Name == name))
+        {
+            _ = await this.modal.ShowSmallDialog($"Der Spieler '{name}' existiert bereits!", UI.Base.Contracts.Enum.EDialogButtons.OK);
+            return;
+        }
+        var player = new Player()
+        {
+            Id = Guid.NewGuid(),
+            Name = name
+        };
+        await this.Context.Players.AddAsync(player);
+        await this.Context.SaveChangesAsync();
+    }
+}

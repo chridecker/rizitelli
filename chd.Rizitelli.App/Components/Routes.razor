@@ -1,6 +1,35 @@
-﻿<Router AppAssembly="@typeof(MauiProgram).Assembly">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-</Router>
+﻿@using chd.Rizitelli.Contracts.Interfaces
+
+<CascadingToolTip>
+    <CascadingDropList>
+        <CascadingBlazoredModal Class="@($"chd-app-modal {(this.settingManager.IsiOS ? "ios" : "")}")"
+                                Position="ModalPosition.Custom"
+                                PositionCustomClass="chd-app-modal-position"
+                                AnimationType="ModalAnimationType.None" Size="ModalSize.Automatic" HideCloseButton="false">
+            <CustomErrorBoundary IsDeveloperMode="true">
+                <Router AppAssembly="@typeof(MauiProgram).Assembly">
+                    <Found Context="routeData">
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+                        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+                    </Found>
+                </Router>
+            </CustomErrorBoundary>
+        </CascadingBlazoredModal>
+    </CascadingDropList>
+</CascadingToolTip>
+
+@code {
+    [Inject] ISettingManager settingManager { get; set; }
+    [Inject] IBaseUIComponentHandler _baseUIComponentHandler { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var darkMode = await this._baseUIComponentHandler.GetDarkMode();
+
+            await this._baseUIComponentHandler.SetDarkMode(darkMode);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

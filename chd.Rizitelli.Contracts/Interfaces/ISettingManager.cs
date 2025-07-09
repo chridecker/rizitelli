@@ -9,6 +9,6 @@ namespace chd.Rizitelli.Contracts.Interfaces
 {
     public interface ISettingManager : IBaseClientSettingManager
     {
-
+        bool IsiOS{get;}
     }
 }

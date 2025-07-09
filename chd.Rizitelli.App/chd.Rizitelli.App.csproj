@@ -43,7 +43,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-ios'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.6" />
 		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.10" />
 	</ItemGroup>
 
