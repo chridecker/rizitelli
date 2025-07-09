@@ -1,4 +1,5 @@
-﻿using System;
+﻿using chd.Rizitelli.Contracts.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace chd.Rizitelli.App.Services
 {
-    public class VibrationHelper
+    public class VibrationHelper : IVibrationHelper
     {
         public void Vibrate(TimeSpan duration)
         {

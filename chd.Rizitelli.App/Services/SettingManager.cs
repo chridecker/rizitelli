@@ -1,4 +1,5 @@
-﻿using chd.UI.Base.Client.Implementations.Services.Base;
+﻿using chd.Rizitelli.Contracts.Interfaces;
+using chd.UI.Base.Client.Implementations.Services.Base;
 using chd.UI.Base.Contracts.Interfaces.Services;
 using chd.UI.Base.Contracts.Interfaces.Services.Base;
 using Microsoft.AspNetCore.Components;
@@ -18,8 +19,5 @@ namespace chd.Rizitelli.App.Services
         {
         }
     }
-    public interface ISettingManager : IBaseClientSettingManager
-    {
-
-    }
+    
 }

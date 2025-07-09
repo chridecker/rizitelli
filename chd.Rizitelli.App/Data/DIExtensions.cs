@@ -1,5 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Blazored.Modal.Services;
+#if ANDROID
+using chd.Rizitelli.App.Platforms.Android;
+#elif IOS
+using chd.Rizitelli.App.Platforms.iOS;
+#endif
+using chd.Rizitelli.App.Services;
+using chd.Rizitelli.Contracts.Interfaces;
+using chd.Rizitelli.Persistence.Data;
+using chd.UI.Base.Client.Extensions;
+using chd.UI.Base.Client.Implementations.Services;
+using chd.UI.Base.Contracts.Interfaces.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +21,36 @@ using System.Threading.Tasks;
 
 namespace chd.Rizitelli.App.Data
 {
-  public static class DIExtensions
+    public static class DIExtensions
     {
-        public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DataContext>(options =>
-            {
-                System.AppContext.SetSwitch("Microsoft.EntityFrameworkCore.Issue31751", true);
-                //options.UseModel(ScoringContextModel.Instance);
-                options.UseSqlite(configuration.GetConnectionString(nameof(DataContext)));
-            });
+#if ANDROID
+            services.AddAndroidServices();
+#elif IOS
+            services.AddiOS();
+#endif
+            services.AddUtilities<chdProfileService, int, int, UserIdLogInService, SettingManager, ISettingManager, UIComponentHandler, IBaseUIComponentHandler, MauiUpdateService>(ServiceLifetime.Singleton);
+            services.AddMauiModalHandler();
+            services.AddScoped<INavigationHistoryStateContainer, NavigationHistoryStateContainer>();
+            services.AddScoped<INavigationHandler, NavigationHandler>();
+            services.AddDataAccess(configuration);
+
+             services.AddSingleton<IAppInfoService, AppInfoService>();
+
+            services.AddSingleton<IVibrationHelper,VibrationHelper>();
+
+            services.AddSingleton<IDeviceInfo>(_ => DeviceInfo.Current);
+            services.AddSingleton<IAppInfo>(_ => AppInfo.Current);
+
+             services.RemoveAll<IModalService>();
+            services.AddSingleton<ModalHandler>();
+            services.AddSingleton<IModalService>(sp => sp.GetRequiredService<ModalHandler>());
+            services.AddSingleton<IModalHandler>(sp => sp.GetRequiredService<ModalHandler>());
+            services.AddSingleton<INavigationHistoryStateContainer, NavigationHistoryStateContainer>();
+            services.AddScoped<INavigationHandler, NavigationHandler>();
+
+
             return services;
         }
     }

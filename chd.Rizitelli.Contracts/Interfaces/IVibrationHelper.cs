@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace chd.Rizitelli.App.Dtos.Base
+namespace chd.Rizitelli.Contracts.Interfaces
 {
-    public abstract class BaseEntity<T>
+    public interface IVibrationHelper
     {
-        public T Id { get; set; }
     }
 }

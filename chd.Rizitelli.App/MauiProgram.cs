@@ -1,25 +1,15 @@
 ﻿using Blazored.Modal;
 using chd.Rizitelli.App.Data;
 #if ANDROID
-using chd.Rizitelli.App.Platforms.Android;
 using Maui.Android.InAppUpdates;
-
 #elif IOS
-using chd.Rizitelli.App.Platforms.iOS;
-using UIKit;
 #endif
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.LifecycleEvents;
 using SQLitePCL;
-using chd.UI.Base.Contracts.Interfaces.Services;
-using chd.UI.Base.Contracts.Interfaces.Update;
-using chd.UI.Base.Client.Extensions;
-using chd.UI.Base.Client.Implementations.Services;
-using chd.Rizitelli.App.Services;
-using Blazored.Modal.Services;
+using chd.Rizitelli.Persistence.Data;
 
 namespace chd.Rizitelli.App
 {
@@ -58,36 +48,7 @@ namespace chd.Rizitelli.App
             return app;
         }
 
-        public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
-        {
-#if ANDROID
-            services.AddAndroidServices();
-#elif IOS
-            services.AddiOS();
-#endif
-            services.AddUtilities<chdProfileService, int, int, UserIdLogInService, SettingManager, ISettingManager, UIComponentHandler, IBaseUIComponentHandler, MauiUpdateService>(ServiceLifetime.Singleton);
-            services.AddMauiModalHandler();
-            services.AddScoped<INavigationHistoryStateContainer, NavigationHistoryStateContainer>();
-            services.AddScoped<INavigationHandler, NavigationHandler>();
-            services.AddDataAccess(configuration);
-
-             services.AddSingleton<IAppInfoService, AppInfoService>();
-
-            services.AddSingleton<VibrationHelper>();
-
-            services.AddSingleton<IDeviceInfo>(_ => DeviceInfo.Current);
-            services.AddSingleton<IAppInfo>(_ => AppInfo.Current);
-
-             services.RemoveAll<IModalService>();
-            services.AddSingleton<ModalHandler>();
-            services.AddSingleton<IModalService>(sp => sp.GetRequiredService<ModalHandler>());
-            services.AddSingleton<IModalHandler>(sp => sp.GetRequiredService<ModalHandler>());
-            services.AddSingleton<INavigationHistoryStateContainer, NavigationHistoryStateContainer>();
-            services.AddScoped<INavigationHandler, NavigationHandler>();
-
-
-            return services;
-        }
+        
 
         private static void InitDatabase(this MauiAppBuilder builder)
         {
